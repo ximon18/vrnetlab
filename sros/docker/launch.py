@@ -374,6 +374,7 @@ if __name__ == '__main__':
     parser.add_argument('--username', default='vrnetlab', help='Username')
     parser.add_argument('--password', default='VR-netlab9', help='Password')
     parser.add_argument('--num-nics', default=5, help='Number of NICs')
+    parser.add_argument('--ram', default=6144, help='Max router memory (MiB)')
     args = parser.parse_args()
 
     LOG_FORMAT = "%(asctime)s: %(module)-10s %(levelname)-8s %(message)s"
@@ -384,5 +385,5 @@ if __name__ == '__main__':
     if args.trace:
         logger.setLevel(1)
 
-    ia = SROS(args.username, args.password, num_nics=int(args.num_nics))
+    ia = SROS(args.username, args.password, num_nics=int(args.num_nics), ram=args.ram)
     ia.start()
