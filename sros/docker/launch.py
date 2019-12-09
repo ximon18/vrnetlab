@@ -205,7 +205,7 @@ class SROS_integrated(SROS_vm):
 class SROS_cp(SROS_vm):
     """ Control plane for distributed VSR-SIM
     """
-    def __init__(self, username, password, num_lc=1, ram):
+    def __init__(self, username, password, ram, num_lc=1):
         super(SROS_cp, self).__init__(username, password, ram=ram)
         self.num_lc = num_lc
 
@@ -267,7 +267,7 @@ class SROS_cp(SROS_vm):
 class SROS_lc(SROS_vm):
     """ Line card for distributed VSR-SIM
     """
-    def __init__(self, slot=1, ram):
+    def __init__(self, ram, slot=1):
         super(SROS_lc, self).__init__(None, None, num=slot, ram=ram)
         self.slot = slot
 
