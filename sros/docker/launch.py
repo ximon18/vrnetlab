@@ -145,8 +145,8 @@ class SROS_vm(vrnetlab.VM):
 class SROS_integrated(SROS_vm):
     """ Integrated VSR-SIM
     """
-    def __init__(self, username, password):
-        super(SROS_integrated, self).__init__(username, password)
+    def __init__(self, username, password, ram):
+        super(SROS_integrated, self).__init__(username, password, ram=ram)
 
         self.num_nics = 5
         self.smbios = ["type=1,product=TIMOS:address=10.0.0.15/24@active license-file=tftp://10.0.0.2/license.txt slot=A chassis=SR-c12 card=cfm-xp-b mda/1=m20-1gb-xp-sfp"]
@@ -205,8 +205,8 @@ class SROS_integrated(SROS_vm):
 class SROS_cp(SROS_vm):
     """ Control plane for distributed VSR-SIM
     """
-    def __init__(self, username, password, num_lc=1):
-        super(SROS_cp, self).__init__(username, password)
+    def __init__(self, username, password, num_lc=1, ram):
+        super(SROS_cp, self).__init__(username, password, ram=ram)
         self.num_lc = num_lc
 
         self.num_nics = 0
@@ -267,8 +267,8 @@ class SROS_cp(SROS_vm):
 class SROS_lc(SROS_vm):
     """ Line card for distributed VSR-SIM
     """
-    def __init__(self, slot=1):
-        super(SROS_lc, self).__init__(None, None, num=slot)
+    def __init__(self, slot=1, ram):
+        super(SROS_lc, self).__init__(None, None, num=slot, ram=ram)
         self.slot = slot
 
         self.num_nics = 6
@@ -329,7 +329,7 @@ class SROS_lc(SROS_vm):
 
 
 class SROS(vrnetlab.VR):
-    def __init__(self, username, password, num_nics):
+    def __init__(self, username, password, num_nics, ram):
         super(SROS, self).__init__(username, password)
 
         # move files into place
@@ -353,12 +353,12 @@ class SROS(vrnetlab.VR):
 
             num_lc = math.ceil(num_nics / 6)
             self.logger.info("Number of linecards: " + str(num_lc))
-            self.vms = [ SROS_cp(username, password, num_lc=num_lc) ]
+            self.vms = [ SROS_cp(username, password, num_lc=num_lc, ram=ram) ]
             for i in range(1, num_lc+1):
-                self.vms.append(SROS_lc(i))
+                self.vms.append(SROS_lc(i, ram=ram))
 
         else: # 5 ports or less means integrated VSR-SIM
-            self.vms = [ SROS_integrated(username, password) ]
+            self.vms = [ SROS_integrated(username, password, ram=ram) ]
 
         # set up bridge for connecting CP with LCs
         vrnetlab.run_command(["brctl", "addbr", "int_cp"])
